@@ -1,3 +1,4 @@
 import streamlit as st
-st.title ("EL MANDA MÁS")
-st.sidebar.title ("PATRONES")
+st.title ("TRABAJO PRÁCTICO MÓDULO I")
+st.sidebar.title ("HOME","EJERCICIO 1")
+st.write("Elaborado por: Marlon Rojas")
