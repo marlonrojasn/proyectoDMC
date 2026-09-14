@@ -1,3 +1,3 @@
 import streamlit as st
-st.tittle ("EL MANDA MÁS")
-st.sidebar ("PATRONES")
+st.title ("EL MANDA MÁS")
+st.sidebar.title ("PATRONES")
