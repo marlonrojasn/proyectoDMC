@@ -35,11 +35,3 @@ elif Módulos =="Movimientos Financieros":
     st.write("No cuenta con saldo")
   
 
-elif Módulos =="Ejercicio 2":
-  st.write("Resolución Ejercicio 2")
-elif Módulos =="Ejercicio 3":
-  st.write("Resolución Ejercicio 3")
-else:
-  st.write("Resolución Ejercicio 4")
- 
-st.write("Desarrollo web - Python")
