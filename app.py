@@ -4,7 +4,6 @@ st.title ("TRABAJO PRÁCTICO MÓDULO I")
 Módulos = st.sidebar.selectbox ("Desplegar",["Home","Ejercicio 1","Ejercicio 2","Ejercicio 3","Ejercicio 4"])
 if Módulos == "Home":
   st.write ("Trabajo Módulo I") 
-  st.image("Python.png",width =300)
   st.image("prog.png",width =300)
   st.write ("Marlon Jerson Rojas Novoa")
   st.write ("Módulo I")
