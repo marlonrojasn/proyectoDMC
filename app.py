@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 st.title ("TRABAJO PRÁCTICO MÓDULO I")
 st.sidebar.title("Módulos")
-Módulos = st.sidebar.selectbox ("Desplegar",["Home","Ejercicio 1","Ejercicio 2","Ejercicio 3","Ejercicio 4"])
+Módulos = st.sidebar.selectbox ("Desplegar",["Home","Movimientos Financieros","Ejercicio 2","Ejercicio 3","Ejercicio 4"])
 if Módulos == "Home":
   st.write ("Trabajo Módulo I") 
   st.image("prog.png",width =300)
