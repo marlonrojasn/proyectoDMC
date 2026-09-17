@@ -26,7 +26,7 @@ elif Módulos =="Movimientos Financieros":
         Ingreso = 0
         Gasto = Valor
 
-    Saldo = ingreso - gasto
+    Saldo = Ingreso - Gasto
 
     st.write("Movimiento:", Movimiento)
     st.write("Tipo:", Tipo)
