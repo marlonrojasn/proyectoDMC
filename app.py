@@ -21,18 +21,19 @@ elif Módulos =="Movimientos Financieros":
   Ingreso = st.number_input("Ingreso",value=0.0)
   Gasto= st.number_input("Gasto",value=0.0)    
   Saldo = Ingreso - Gasto
-  If Saldo > 0:
-    st.write("A Favor:", Saldo)
-  Elif Saldo <0:
-    st.write("En Contra:", Saldo)
-  Else:
-    st.write("No cuenta con saldo")
 
   st.write("Movimiento:", Movimiento)
   st.write("Tipo:", Tipo)
   st.write("Total Ingreso:", Ingreso)
   st.write("Total Gasto:", Gasto)
   st.write("Saldo:", Saldo)
+  
+If Saldo > 0:
+    st.write("A Favor:", Saldo)
+  Elif Saldo <0:
+    st.write("En Contra:", Saldo)
+  Else:
+    st.write("No cuenta con saldo")
   
 
 elif Módulos =="Ejercicio 2":
