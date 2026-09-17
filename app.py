@@ -27,11 +27,11 @@ elif Módulos =="Movimientos Financieros":
   st.write("Total Gasto:", Gasto)
   st.write("Saldo:", Saldo)
   
-if Saldo > 0:
+  if Saldo > 0:
     st.write("A Favor:", Saldo)
-elif Saldo <0:
+  elif Saldo <0:
     st.write("En Contra:", Saldo)
-else:
+  else:
     st.write("No cuenta con saldo")
   
 
