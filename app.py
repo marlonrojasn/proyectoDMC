@@ -17,7 +17,7 @@ elif Módulos =="Movimientos Financieros":
   st.write ("Resolución Ejercicio1")
   st.markdown("Vamos Resolver El Ejercicio1")
   Movimiento = st.text_input("Ingrese Movimiento")
-  Tipo = select.box("Tipo de Movimiento",["Ingreso","Gasto"])
+  Tipo = st.selectbox("Tipo de Movimiento",["Ingreso","Gasto"])
   Valor = st.number_input("Ingrese el valor",value=0.0)    
   if Tipo == "Ingreso":
         Ingreso = Valor
