@@ -5,5 +5,5 @@ Módulos = st.sidebar.selectbox ("Desplegar",["Home","Ejercicio 1","Ejercicio 2"
 if Módulos == "Home":
   st.write ("Trabajo Módulo I") 
   st.write ("Marlon Rojas Novoa")
-  st.image()
+  st.image("Python")
 st.write("Desarrollo web - Python")
