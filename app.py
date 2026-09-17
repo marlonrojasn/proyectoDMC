@@ -28,10 +28,10 @@ elif Módulos =="Movimientos Financieros":
 
   Saldo = Ingreso - Gasto
 
-    st.write("Movimiento:", Movimiento)
-    st.write("Tipo:", Tipo)
-    st.write("Valor:", Valor)
-    st.write("Saldo:", Saldo)
+  st.write("Movimiento:", Movimiento)
+  st.write("Tipo:", Tipo)
+  st.write("Valor:", Valor)
+  st.write("Saldo:", Saldo)
   
 
 elif Módulos =="Ejercicio 2":
