@@ -15,9 +15,9 @@ if Módulos == "Home":
 
 elif Módulos =="Movimientos Financieros":
   st.write ("Resolución Ejercicio1")
-  Concepto = st.number_input("Ingrese el concepto del movimiento")
-  Tipo_Movimiento = st.number_input("Ingrese el tipo de movimiento: Gasto o Ingreso")
+  st.markdown("Vamos Resolver El Ejercicio1")
   Valor = st.numer_input("Ingrese valor")
+  
   
 
   st.write(arreglo)
