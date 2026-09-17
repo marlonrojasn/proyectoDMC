@@ -4,7 +4,14 @@ st.title ("TRABAJO PRÁCTICO MÓDULO I")
 st.sidebar.markdown(
     "<h2 style='text-align: center;'>Módulos</h2>",
     unsafe_allow_html=True)
-st.sidebar.image("prog.png", width=150)
+st.sidebar.markdown(
+    """
+    <div style="text-align: center;">
+        <img src="Python.png" width="150">
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 Módulos = st.sidebar.selectbox ("Desplegar",["Home","Movimientos Financieros","Ejercicio 2","Ejercicio 3","Ejercicio 4"])
 if Módulos == "Home":
   st.write ("Trabajo Módulo I") 
