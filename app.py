@@ -20,11 +20,11 @@ elif Módulos =="Movimientos Financieros":
   Tipo = select.box("Tipo de Movimiento",["Ingreso","Gasto"])
   valor = st.number_input("Ingrese el valor", min_value=0.0, value=0.0)    
     if tipo == "Ingreso":
-        ingreso = valor
-        gasto = 0
+        Ingreso = valor
+        Gasto = 0
     else:
-        ingreso = 0
-        gasto = valor
+        Ingreso = 0
+        Gasto = valor
 
     saldo = ingreso - gasto
 
