@@ -16,6 +16,9 @@ if Módulos == "Home":
 elif Módulos =="Movimientos Financieros":
   st.write ("Resolución Ejercicio1")
   st.markdown("Vamos Resolver El Ejercicio1")
+  st.text_input("Ingrese Movimiento")
+  Tipo = select.box("Tipo de Movimiento",[Ingreso,Gasto])
+  valor = st.number_input( "Ingrese el valor", min_value=0.0, value=0.0)
   
 
 elif Módulos =="Ejercicio 2":
