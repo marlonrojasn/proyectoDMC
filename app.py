@@ -16,7 +16,7 @@ if Módulos == "Home":
 elif Módulos =="Movimientos Financieros":
   st.write ("Resolución Ejercicio1")
   st.markdown("Vamos Resolver El Ejercicio1")
-  Valor = st.numer_input("Ingrese valor")
+  Valor = int(st.numer_input("Ingrese Valor"))
   
   
 
