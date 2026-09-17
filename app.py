@@ -13,10 +13,12 @@ if Módulos == "Home":
   st.write ("Descripción del proyecto")
   st.write ("Tecnologías usadas")
 
-elif Módulos =="Ejercicio 1":
+elif Módulos =="Movimientos Financieros":
   st.write ("Resolución Ejercicio1")
-  cantidad =st.slider("Selecciones un valor del rango", min_value = 1, maxvalue = 100, value=20)
-  arreglo =np.arrange(cantidad)
+  Concepto = st.number_input("Ingrese el concepto del movimiento")
+  Tipo_Movimiento = st.number_input("Ingrese el tipo de movimiento: Gasto o Ingreso")
+  Valor = st.numer_input("Ingrese valor")
+  
 
   st.write(arreglo)
 
