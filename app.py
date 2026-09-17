@@ -18,7 +18,25 @@ elif Módulos =="Movimientos Financieros":
   st.markdown("Vamos Resolver El Ejercicio1")
   st.text_input("Ingrese Movimiento")
   Tipo = select.box("Tipo de Movimiento",[Ingreso,Gasto])
-  valor = st.number_input( "Ingrese el valor", min_value=0.0, value=0.0)
+  valor = st.number_input( "Ingrese el valor", min_value=0.0, value=0.0)    valor = st.number_input(
+        "Ingrese el valor",
+        min_value=0.0,
+        value=0.0
+    )
+
+    if tipo == "Ingreso":
+        ingreso = valor
+        gasto = 0
+    else:
+        ingreso = 0
+        gasto = valor
+
+    saldo = ingreso - gasto
+
+    st.write("Movimiento:", movimiento)
+    st.write("Tipo:", tipo)
+    st.write("Valor:", valor)
+    st.write("Saldo:", saldo)
   
 
 elif Módulos =="Ejercicio 2":
