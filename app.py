@@ -16,13 +16,11 @@ if Módulos == "Home":
 elif Módulos =="Movimientos Financieros":
   st.write ("Resolución Ejercicio1")
   st.markdown("Esta Plantilla Nos Ayuda A Registrar Nuestras Finanzas")
-  Movimiento = st.text_input("Ingrese Movimiento")
-  Tipo = st.selectbox("Tipo de Movimiento",["Ingreso","Gasto"])
+  Movimiento = st.text_input("Concepto")
   Ingreso = st.number_input("Ingreso",value=0.0)
   Gasto= st.number_input("Gasto",value=0.0)    
   Saldo = Ingreso - Gasto
   st.write("Movimiento:", Movimiento)
-  st.write("Tipo:", Tipo)
   st.write("Total Ingreso:", Ingreso)
   st.write("Total Gasto:", Gasto)
   st.write("Saldo:", Saldo)
