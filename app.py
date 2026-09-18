@@ -86,11 +86,11 @@ elif Módulos == "Movimientos Financieros":
     else:
         st.info("No tiene saldo a favor ni en contra")
   
-  if Saldo > 0:
-    st.write("A Favor:", Saldo)
-  elif Saldo <0:
+      if Saldo > 0:
+        st.write("A Favor:", Saldo)
+      elif Saldo <0:
     st.write("En Contra:", Saldo)
-  else:
+      else:
     st.write("No cuenta con saldo")
   
 
