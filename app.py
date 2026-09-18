@@ -71,4 +71,5 @@ elif Módulos == "Movimientos Financieros":
     else:
         st.info("No tiene saldo a favor ni en contra")
   
-
+elif Módulos = "Ejercicio 2"
+    st.write ="Andrea a como el kg"
