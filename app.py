@@ -20,7 +20,6 @@ elif Módulos == "Movimientos Financieros":
     st.write("**Resolución Ejercicio 1**")
     st.markdown("**Esta Plantilla Nos Ayuda A Registrar Nuestras Finanzas**")
 
-    # Crear la lista de movimientos
     if "movimientos" not in st.session_state:
         st.session_state.movimientos = []
 
@@ -28,19 +27,9 @@ elif Módulos == "Movimientos Financieros":
 
     st.markdown("**Datos del movimiento**")
 
-    Ingreso = st.number_input(
-        "Ingreso",
-        min_value=0.0,
-        value=0.0
-    )
+    Ingreso = st.number_input("Ingreso", min_value=0.0, value=0.0)
+    Gasto = st.number_input("Gasto", min_value=0.0, value=0.0)
 
-    Gasto = st.number_input(
-        "Gasto",
-        min_value=0.0,
-        value=0.0
-    )
-
-    # Botón para registrar el movimiento
     if st.button("Registrar movimiento"):
         nuevo_movimiento = {
             "Concepto": Movimiento,
@@ -52,13 +41,11 @@ elif Módulos == "Movimientos Financieros":
 
         st.success("Movimiento registrado correctamente")
 
-    # Mostrar la lista de movimientos
     st.markdown("### Lista de movimientos registrados")
 
     for movimiento in st.session_state.movimientos:
         st.write(movimiento)
 
-    # Calcular los totales
     total_ingresos = sum(
         movimiento["Ingreso"]
         for movimiento in st.session_state.movimientos
@@ -71,26 +58,17 @@ elif Módulos == "Movimientos Financieros":
 
     saldo_final = total_ingresos - total_gastos
 
-    # Mostrar los resultados
     st.markdown("### Resumen financiero")
 
     st.write("**Total de ingresos:**", total_ingresos)
     st.write("**Total de gastos:**", total_gastos)
     st.write("**Saldo final:**", saldo_final)
 
-    # Mostrar el estado del saldo
     if saldo_final > 0:
         st.success(f"Saldo a favor: {saldo_final}")
     elif saldo_final < 0:
         st.error(f"Saldo en contra: {saldo_final}")
     else:
         st.info("No tiene saldo a favor ni en contra")
-  
-      if Saldo > 0:
-        st.write("A Favor:", Saldo)
-      elif Saldo <0:
-    st.write("En Contra:", Saldo)
-      else:
-    st.write("No cuenta con saldo")
   
 
