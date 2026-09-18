@@ -16,18 +16,75 @@ if Módulos == "Home":
   st.write ("Descripción del proyecto")
   st.write ("Tecnologías usadas")
 
-elif Módulos =="Movimientos Financieros":
-  st.write ("**Resolución Ejercicio1**")
-  st.markdown("**Esta Plantilla Nos Ayuda A Registrar Nuestras Finanzas**")
-  Movimiento = st.text_input("Concepto")
-  st.markdown ("**Tipo de Movimiento**")
-  Ingreso = st.number_input("Ingreso",value=0.0)
-  Gasto= st.number_input("Gasto",value=0.0)    
-  Saldo = Ingreso - Gasto
-  st.write("Movimiento:", Movimiento)
-  st.write("Total Ingreso:", Ingreso)
-  st.write("Total Gasto:", Gasto)
-  st.write("Saldo:", Saldo)
+elif Módulos == "Movimientos Financieros":
+    st.write("**Resolución Ejercicio 1**")
+    st.markdown("**Esta Plantilla Nos Ayuda A Registrar Nuestras Finanzas**")
+
+    # Crear la lista de movimientos
+    if "movimientos" not in st.session_state:
+        st.session_state.movimientos = []
+
+    Movimiento = st.text_input("Concepto")
+
+    st.markdown("**Datos del movimiento**")
+
+    Ingreso = st.number_input(
+        "Ingreso",
+        min_value=0.0,
+        value=0.0
+    )
+
+    Gasto = st.number_input(
+        "Gasto",
+        min_value=0.0,
+        value=0.0
+    )
+
+    # Botón para registrar el movimiento
+    if st.button("Registrar movimiento"):
+        nuevo_movimiento = {
+            "Concepto": Movimiento,
+            "Ingreso": Ingreso,
+            "Gasto": Gasto
+        }
+
+        st.session_state.movimientos.append(nuevo_movimiento)
+
+        st.success("Movimiento registrado correctamente")
+
+    # Mostrar la lista de movimientos
+    st.markdown("### Lista de movimientos registrados")
+
+    for movimiento in st.session_state.movimientos:
+        st.write(movimiento)
+
+    # Calcular los totales
+    total_ingresos = sum(
+        movimiento["Ingreso"]
+        for movimiento in st.session_state.movimientos
+    )
+
+    total_gastos = sum(
+        movimiento["Gasto"]
+        for movimiento in st.session_state.movimientos
+    )
+
+    saldo_final = total_ingresos - total_gastos
+
+    # Mostrar los resultados
+    st.markdown("### Resumen financiero")
+
+    st.write("**Total de ingresos:**", total_ingresos)
+    st.write("**Total de gastos:**", total_gastos)
+    st.write("**Saldo final:**", saldo_final)
+
+    # Mostrar el estado del saldo
+    if saldo_final > 0:
+        st.success(f"Saldo a favor: {saldo_final}")
+    elif saldo_final < 0:
+        st.error(f"Saldo en contra: {saldo_final}")
+    else:
+        st.info("No tiene saldo a favor ni en contra")
   
   if Saldo > 0:
     st.write("A Favor:", Saldo)
