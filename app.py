@@ -16,6 +16,11 @@ if Módulos == "Home":
   st.write ("Descripción del proyecto")
   st.write ("Tecnologías usadas")
 
+
+
+
+
+
 elif Módulos == "Movimientos Financieros":
 
     st.write("**Resolución Ejercicio 1**")
@@ -87,3 +92,117 @@ elif Módulos == "Movimientos Financieros":
 
     else:
         st.info("El flujo de caja está en equilibrio")
+
+
+
+
+
+
+elif Módulos == "Ejercicio 2":
+
+    import numpy as np
+    import pandas as pd
+
+    st.title("Registro de Productos")
+
+    st.markdown(
+        """
+        Esta aplicación permite registrar productos mediante un formulario.
+        Cada registro contiene el nombre, categoría, precio, cantidad y total.
+        Al presionar el botón "Agregar producto", la información se almacena
+        y se muestra en una tabla actualizada.
+        """
+    )
+
+    # Crear los arrays en session_state
+    if "nombres" not in st.session_state:
+        st.session_state.nombres = np.array([])
+
+    if "categorias" not in st.session_state:
+        st.session_state.categorias = np.array([])
+
+    if "precios" not in st.session_state:
+        st.session_state.precios = np.array([])
+
+    if "cantidades" not in st.session_state:
+        st.session_state.cantidades = np.array([])
+
+    if "totales" not in st.session_state:
+        st.session_state.totales = np.array([])
+
+    # Formulario
+    st.markdown("### Ingreso de datos")
+
+    nombre = st.text_input("Nombre del producto")
+
+    categoria = st.selectbox(
+        "Categoría",
+        ["Bebidas", "Alimentos", "Limpieza", "Tecnología"]
+    )
+
+    precio = st.number_input(
+        "Precio",
+        min_value=0.0,
+        step=0.10
+    )
+
+    cantidad = st.number_input(
+        "Cantidad",
+        min_value=1,
+        step=1
+    )
+
+    # Calcular total
+    total = precio * cantidad
+
+    st.write(f"**Total: S/ {total:.2f}**")
+
+    # Botón para agregar
+    if st.button("Agregar producto"):
+
+        if nombre == "":
+            st.warning("Ingresa el nombre del producto.")
+
+        else:
+            st.session_state.nombres = np.append(
+                st.session_state.nombres,
+                nombre
+            )
+
+            st.session_state.categorias = np.append(
+                st.session_state.categorias,
+                categoria
+            )
+
+            st.session_state.precios = np.append(
+                st.session_state.precios,
+                precio
+            )
+
+            st.session_state.cantidades = np.append(
+                st.session_state.cantidades,
+                cantidad
+            )
+
+            st.session_state.totales = np.append(
+                st.session_state.totales,
+                total
+            )
+
+            st.success("Producto agregado correctamente.")
+
+    # Crear DataFrame
+    df = pd.DataFrame({
+        "Producto": st.session_state.nombres,
+        "Categoría": st.session_state.categorias,
+        "Precio": st.session_state.precios,
+        "Cantidad": st.session_state.cantidades,
+        "Total": st.session_state.totales
+    })
+
+    # Mostrar DataFrame
+    st.markdown("### Registros")
+
+    st.dataframe(df, use_container_width=True)
+```
+
