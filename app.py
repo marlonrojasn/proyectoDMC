@@ -204,5 +204,4 @@ elif Módulos == "Ejercicio 2":
     st.markdown("### Registros")
 
     st.dataframe(df, use_container_width=True)
-```
 
