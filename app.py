@@ -17,8 +17,12 @@ if Módulos == "Home":
   st.write ("Tecnologías usadas")
 
 elif Módulos == "Movimientos Financieros":
+
     st.write("**Resolución Ejercicio 1**")
-    st.markdown("**Esta Plantilla Nos Ayuda A Registrar Nuestras Finanzas**")
+
+    st.markdown(
+        "**Esta Plantilla Nos Ayuda A Registrar Nuestras Finanzas**"
+    )
 
     if "movimientos" not in st.session_state:
         st.session_state.movimientos = []
@@ -27,14 +31,23 @@ elif Módulos == "Movimientos Financieros":
 
     st.markdown("**Datos del movimiento**")
 
-    Ingreso = st.number_input("Ingreso", min_value=0.0, value=0.0)
-    Gasto = st.number_input("Gasto", min_value=0.0, value=0.0)
+    Tipo = st.selectbox(
+        "Tipo de movimiento",
+        ["Ingreso", "Gasto"]
+    )
+
+    Valor = st.number_input(
+        "Valor",
+        min_value=0.0,
+        value=0.0
+    )
 
     if st.button("Registrar movimiento"):
+
         nuevo_movimiento = {
             "Concepto": Movimiento,
-            "Ingreso": Ingreso,
-            "Gasto": Gasto
+            "Tipo": Tipo,
+            "Valor": Valor
         }
 
         st.session_state.movimientos.append(nuevo_movimiento)
@@ -47,13 +60,15 @@ elif Módulos == "Movimientos Financieros":
         st.write(movimiento)
 
     total_ingresos = sum(
-        movimiento["Ingreso"]
+        movimiento["Valor"]
         for movimiento in st.session_state.movimientos
+        if movimiento["Tipo"] == "Ingreso"
     )
 
     total_gastos = sum(
-        movimiento["Gasto"]
+        movimiento["Valor"]
         for movimiento in st.session_state.movimientos
+        if movimiento["Tipo"] == "Gasto"
     )
 
     saldo_final = total_ingresos - total_gastos
@@ -65,11 +80,10 @@ elif Módulos == "Movimientos Financieros":
     st.write("**Saldo final:**", saldo_final)
 
     if saldo_final > 0:
-        st.success(f"Saldo a favor: {saldo_final}")
+        st.success(f"Flujo de caja a favor: {saldo_final}")
+
     elif saldo_final < 0:
-        st.error(f"Saldo en contra: {saldo_final}")
+        st.error(f"Flujo de caja en contra: {saldo_final}")
+
     else:
-        st.info("No tiene saldo a favor ni en contra")
-  
-elif Módulos == "Ejercicio 2":
-    st.write("**Andrea a como el kg**")
+        st.info("El flujo de caja está en equilibrio")
