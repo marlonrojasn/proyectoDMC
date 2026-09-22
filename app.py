@@ -209,5 +209,60 @@ elif Módulos == "Ejercicio 2":
     st.dataframe(df, use_container_width=True)
 
 elif Módulos == "Ejercicio 3":
-    st.write ("Solución Ejercicio 3")
+    st.write("Solución Ejercicio 3")
 
+    # Selector de función
+    funcion = st.selectbox(
+        "Seleccione una función:",
+        ["Calcular IMC"]
+    )
+
+    if funcion == "Calcular IMC":
+
+        # Ingreso de parámetros
+        peso = st.number_input(
+            "Ingrese su peso (kg):",
+            min_value=1.0,
+            value=70.0,
+            step=0.1
+        )
+
+        altura = st.number_input(
+            "Ingrese su altura (m):",
+            min_value=0.5,
+            value=1.70,
+            step=0.01
+        )
+
+        # Botón para ejecutar
+        if st.button("Calcular IMC"):
+
+            # Usamos la función de la librería
+            resultado = lf.calcular_imc(peso, altura)
+
+            # Mostrar resultado
+            st.write("Resultado del cálculo:")
+            st.write("IMC:", resultado["imc"])
+            st.write("Clasificación:", resultado["clasificacion"])
+
+            # Guardar resultado
+            registro = {
+                "Peso (kg)": peso,
+                "Altura (m)": altura,
+                "IMC": resultado["imc"],
+                "Clasificación": resultado["clasificacion"]
+            }
+
+            if "historico_imc" not in st.session_state:
+                st.session_state.historico_imc = []
+
+            st.session_state.historico_imc.append(registro)
+
+    # Mostrar histórico
+    st.write("Histórico de resultados:")
+
+    if "historico_imc" in st.session_state:
+        df_historico = pd.DataFrame(st.session_state.historico_imc)
+        st.dataframe(df_historico)
+    else:
+        st.write("Aún no hay resultados registrados.")
