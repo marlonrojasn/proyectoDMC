@@ -1,5 +1,8 @@
 import streamlit as st
 import numpy as np
+import libreria_funciones_proyecto1 as lf
+
+
 st.title ("TRABAJO PRÁCTICO MÓDULO I")
 st.sidebar.markdown(
     "<h2 style='text-align: center;'>Módulos</h2>",
