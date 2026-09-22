@@ -9,7 +9,7 @@ st.sidebar.markdown(
     "<h2 style='text-align: center;'>Módulos</h2>",
     unsafe_allow_html=True)
 st.sidebar.image("Python.png", width=150)
-Módulos = st.sidebar.selectbox ("Desplegar",["Home","Movimientos Financieros","Ejercicio 2","Ejercicio 3","Ejercicio 4"])
+Módulos = st.sidebar.selectbox ("Desplegar",["Home","Ejercicio 1","Ejercicio 2","Ejercicio 3","Ejercicio 4"])
 if Módulos == "Home":
   st.write ("Trabajo Módulo I") 
   st.image("prog.png",width =300)
@@ -25,7 +25,7 @@ if Módulos == "Home":
 
 
 
-elif Módulos == "Movimientos Financieros":
+elif Módulos == "Ejercicio 1":
 
     st.write("**Resolución Ejercicio 1**")
 
