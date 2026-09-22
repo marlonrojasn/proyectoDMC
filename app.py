@@ -208,3 +208,6 @@ elif Módulos == "Ejercicio 2":
 
     st.dataframe(df, use_container_width=True)
 
+elif == "Ejercicio 3":
+    st.write ("Solución Ejercicio 3")
+
