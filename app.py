@@ -26,9 +26,6 @@ if Módulos == "Home":
 
 
 elif Módulos == "Ejercicio 1":
-
-    st.write("**Resolución Ejercicio 1**")
-
     st.markdown(
         "**Esta Plantilla Nos Ayuda A Registrar Nuestras Finanzas**"
     )
