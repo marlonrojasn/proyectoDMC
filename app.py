@@ -17,8 +17,8 @@ if Módulos == "Home":
   st.write ("Módulo I")
   st.write("Ingeniero con interés en tecnología, análisis y gestión de datos, orientado al aprendizaje continuo y la innovación")
   st.write ("Año: 2026")
-  st.write ("Descripción del proyecto")
-  st.write ("Tecnologías usadas")
+  st.write ("Aplicación web desarrollada en Python para realizar cálculos, registrar resultados históricos y visualizar información mediante una interfaz interactiva.")
+  st.write ("Desarrollo de una aplicación interactiva para el procesamiento, registro y visualización de datos, utilizando Python y Streamlit.")
 
 
 
