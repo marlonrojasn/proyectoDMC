@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import libreria_funciones_proyecto1 as lf
-import libreria_clases_proyecto1 as lc
+import librería_clases_proyecto1 as lc
 
 
 st.title("TRABAJO PRÁCTICO MÓDULO I")
