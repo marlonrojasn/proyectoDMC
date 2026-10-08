@@ -1,69 +1,93 @@
 import streamlit as st
 import pandas as pd
-import io
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-st.title("Proyecto Análisis Churn")
+# --------------------------------------------------
+# CONFIGURACIÓN
+# --------------------------------------------------
 
-st.image("imagen1.jpg")
-
-st.sidebar.image("internet.jpg", width=150)
-
-Módulos = st.sidebar.selectbox(
-    "Desplegar",
-    ["Home", "Carga del Data Set", "Items"]
+st.set_page_config(
+    page_title="Proyecto Análisis Churn",
+    layout="wide"
 )
 
-if Módulos == "Home":
+# --------------------------------------------------
+# TÍTULO E IMÁGENES
+# --------------------------------------------------
+
+st.title("Proyecto Análisis Churn")
+
+try:
+    st.image("imagen1.jpg")
+except:
+    pass
+
+try:
+    st.sidebar.image("internet.jpg", width=150)
+except:
+    pass
+
+# --------------------------------------------------
+# MENÚ PRINCIPAL
+# --------------------------------------------------
+
+modulo = st.sidebar.selectbox(
+    "Desplegar",
+    [
+        "Home",
+        "Carga del Data Set",
+        "Items"
+    ]
+)
+
+# --------------------------------------------------
+# HOME
+# --------------------------------------------------
+
+if modulo == "Home":
 
     st.header("Telco Customer Churn")
 
-    st.subheader("Objetivo del análisis")
+    st.subheader("Objetivo del proyecto")
 
     st.write(
-        "El objetivo de este proyecto es analizar la pérdida de clientes "
-        "en la empresa Telco (Customer Churn), identificando características "
-        "y patrones relacionados con la salida de los clientes. "
-        "El análisis permitirá explorar los datos y obtener información "
-        "que pueda contribuir a la toma de decisiones."
+        "El objetivo del proyecto es analizar el comportamiento de los "
+        "clientes de una empresa de telecomunicaciones e identificar "
+        "características y patrones relacionados con la pérdida de clientes "
+        "(Churn), con la finalidad de generar información útil para la "
+        "toma de decisiones."
     )
 
     st.subheader("Datos del autor")
 
-    st.write("Nombre completo: Marlon Jerson Rojas Novoa")
-    st.write("Curso / Especialización: Data Science")
-    st.write("Año: 2026")
+    st.write("**Nombre completo:** Marlon Jerson Rojas Novoa")
+    st.write("**Curso / Especialización:** Data Science")
+    st.write("**Año:** 2026")
 
     st.subheader("Descripción del Dataset")
 
     st.write(
-        "El dataset corresponde a información de clientes de una empresa "
-        "de telecomunicaciones. Contiene variables relacionadas con las "
-        "características de los clientes, los servicios contratados, "
-        "información de facturación y la variable Churn, que indica si "
-        "el cliente abandonó o no la empresa."
+        "El dataset contiene información relacionada con clientes de una "
+        "empresa de telecomunicaciones. Incluye características de los "
+        "clientes, servicios contratados, información de facturación y la "
+        "variable Churn, que indica si el cliente abandonó o no la empresa."
     )
 
     st.subheader("Tecnologías utilizadas")
 
     st.write(
-        "Python: lenguaje utilizado para el desarrollo del proyecto.\n\n"
-        "Pandas: utilizada para la carga, manipulación y análisis de los datos.\n\n"
-        "Streamlit: utilizada para desarrollar la aplicación web interactiva.\n\n"
-        "Matplotlib / Seaborn: utilizadas para la generación de visualizaciones.\n\n"
-        "NumPy: utilizada para operaciones y procesamiento numérico."
+        "Python, Pandas, Streamlit, Matplotlib, Seaborn y NumPy."
     )
 
 
-elif Módulos == "Carga del Data Set":
+# --------------------------------------------------
+# CARGA DEL DATA SET
+# --------------------------------------------------
+
+elif modulo == "Carga del Data Set":
 
     st.header("Carga del Data Set")
-
-    st.write(
-        "Seleccione el archivo CSV para cargar "
-        "y visualizar la información del dataset."
-    )
 
     archivo = st.file_uploader(
         "Cargar archivo CSV",
@@ -72,303 +96,893 @@ elif Módulos == "Carga del Data Set":
 
     if archivo is not None:
 
-        st.success("El archivo fue cargado correctamente.")
+        try:
+            df = pd.read_csv(archivo)
 
-        df = pd.read_csv(archivo, sep=",")
+            st.success("Archivo cargado correctamente.")
 
-        st.session_state["df"] = df
+            st.session_state["df"] = df
 
-        st.subheader("Vista previa del Dataset")
+            st.subheader("Vista previa")
 
-        st.dataframe(df.head())
+            st.dataframe(
+                df.head(),
+                use_container_width=True
+            )
 
-        st.subheader("Dimensiones del Dataset")
+            filas, columnas = df.shape
 
-        filas, columnas = df.shape
+            col1, col2 = st.columns(2)
 
-        st.write(f"Filas: {filas}")
-        st.write(f"Columnas: {columnas}")
+            with col1:
+                st.metric(
+                    "Número de filas",
+                    filas
+                )
+
+            with col2:
+                st.metric(
+                    "Número de columnas",
+                    columnas
+                )
+
+        except Exception as e:
+
+            st.error(
+                f"No se pudo cargar el archivo: {e}"
+            )
 
     else:
 
-        st.info("Por favor, cargue un archivo CSV.")
+        st.info(
+            "Cargue un archivo CSV para comenzar el análisis."
+        )
 
 
-elif Módulos == "Items":
+# --------------------------------------------------
+# ITEMS
+# --------------------------------------------------
 
-    st.header("Ítems de Análisis")
+elif modulo == "Items":
 
     if "df" not in st.session_state:
 
         st.warning(
-            "Primero debe cargar un archivo CSV "
-            "en el módulo Carga del Data Set."
+            "Primero debe cargar el archivo CSV en "
+            "'Carga del Data Set'."
         )
 
     else:
 
         df = st.session_state["df"]
 
-        st.subheader("Ítem 1: Información general del dataset")
+        st.sidebar.markdown("---")
 
-        st.write(
-            "En este ítem se analiza la estructura general del dataset, "
-            "identificando el número de registros, las variables, "
-            "los tipos de datos y la cantidad de valores nulos."
+        item = st.sidebar.selectbox(
+            "Seleccionar Item",
+            [
+                "Ítem 1: Información general",
+                "Ítem 2: Clasificación de variables",
+                "Ítem 3: Estadísticas descriptivas",
+                "Ítem 4: Valores nulos",
+                "Ítem 5: Distribución numérica",
+                "Ítem 6: Variables categóricas",
+                "Ítem 7: Numérico vs categórico",
+                "Ítem 8: Categórico vs categórico",
+                "Ítem 9: Parámetros seleccionados",
+                "Ítem 10: Hallazgos clave"
+            ]
         )
 
-        st.write("Información general del dataset")
+        # --------------------------------------------------
+        # ITEM 1
+        # --------------------------------------------------
 
-        buffer = io.StringIO()
+        if item == "Ítem 1: Información general":
 
-        df.info(buf=buffer)
+            st.header("Ítem 1: Información general")
 
-        st.text(buffer.getvalue())
+            st.subheader("Dimensiones del Dataset")
 
-        st.write("Tipos de datos")
+            filas, columnas = df.shape
 
-        tipos = pd.DataFrame({
-            "Variable": df.columns,
-            "Tipo de dato": df.dtypes.astype(str).values
-        })
+            col1, col2 = st.columns(2)
 
-        st.dataframe(tipos)
+            with col1:
+                st.metric(
+                    "Número de filas",
+                    filas
+                )
 
-        st.write("Conteo de valores nulos")
+            with col2:
+                st.metric(
+                    "Número de columnas",
+                    columnas
+                )
 
-        nulos = df.isnull().sum()
+            st.subheader("Información general")
 
-        tabla_nulos = pd.DataFrame({
-            "Variable": nulos.index,
-            "Valores nulos": nulos.values
-        })
+            buffer = []
 
-        st.dataframe(tabla_nulos)
+            df.info(buf=buffer)
 
-        st.write(f"Total de filas: {df.shape[0]}")
-        st.write(f"Total de columnas: {df.shape[1]}")
+            st.write(
+                "La siguiente tabla muestra información sobre las "
+                "variables, tipos de datos y valores no nulos."
+            )
+
+            informacion = pd.DataFrame({
+                "Variable": df.columns,
+                "Tipo de dato": df.dtypes.astype(str).values,
+                "Valores no nulos": df.notnull().sum().values,
+                "Valores nulos": df.isnull().sum().values
+            })
+
+            st.dataframe(
+                informacion,
+                use_container_width=True
+            )
 
 
-        st.subheader("Ítem 2: Clasificación de variables")
+        # --------------------------------------------------
+        # ITEM 2
+        # --------------------------------------------------
 
-        st.write(
-            "En este ítem se clasifican las variables del dataset en "
-            "numéricas y categóricas. Para realizar esta clasificación "
-            "se utiliza una función personalizada que analiza el tipo "
-            "de dato de cada variable."
-        )
+        elif item == "Ítem 2: Clasificación de variables":
 
-        def clasificar_variables(dataframe):
+            st.header("Ítem 2: Clasificación de variables")
 
-            numericas = []
-            categoricas = []
+            def clasificar_variables(dataframe):
 
-            for columna in dataframe.columns:
+                variables_numericas = []
+                variables_categoricas = []
 
-                if pd.api.types.is_numeric_dtype(dataframe[columna]):
-                    numericas.append(columna)
+                for columna in dataframe.columns:
+
+                    if pd.api.types.is_numeric_dtype(
+                        dataframe[columna]
+                    ):
+
+                        variables_numericas.append(columna)
+
+                    else:
+
+                        variables_categoricas.append(columna)
+
+                return (
+                    variables_numericas,
+                    variables_categoricas
+                )
+
+            variables_numericas, variables_categoricas = (
+                clasificar_variables(df)
+            )
+
+            st.subheader("Variables numéricas")
+
+            tabla_numericas = pd.DataFrame({
+                "Variable": variables_numericas,
+                "Tipo": "Numérica"
+            })
+
+            st.dataframe(
+                tabla_numericas,
+                use_container_width=True
+            )
+
+            st.metric(
+                "Cantidad de variables numéricas",
+                len(variables_numericas)
+            )
+
+            st.subheader("Variables categóricas")
+
+            tabla_categoricas = pd.DataFrame({
+                "Variable": variables_categoricas,
+                "Tipo": "Categórica"
+            })
+
+            st.dataframe(
+                tabla_categoricas,
+                use_container_width=True
+            )
+
+            st.metric(
+                "Cantidad de variables categóricas",
+                len(variables_categoricas)
+            )
+
+            st.info(
+                "CustomerID se considera variable numérica cuando "
+                "su tipo de dato en el Dataset es numérico."
+            )
+
+
+        # --------------------------------------------------
+        # ITEM 3
+        # --------------------------------------------------
+
+        elif item == "Ítem 3: Estadísticas descriptivas":
+
+            st.header("Ítem 3: Estadísticas descriptivas")
+
+            st.subheader("Estadísticas de las variables numéricas")
+
+            variables_numericas = df.select_dtypes(
+                include="number"
+            ).columns.tolist()
+
+            if len(variables_numericas) > 0:
+
+                estadisticas = df[
+                    variables_numericas
+                ].describe().T
+
+                estadisticas["mediana"] = df[
+                    variables_numericas
+                ].median()
+
+                estadisticas = estadisticas[
+                    [
+                        "count",
+                        "mean",
+                        "mediana",
+                        "std",
+                        "min",
+                        "25%",
+                        "50%",
+                        "75%",
+                        "max"
+                    ]
+                ]
+
+                st.dataframe(
+                    estadisticas.round(2),
+                    use_container_width=True
+                )
+
+                st.write(
+                    "La media representa el promedio de los valores, "
+                    "mientras que la mediana representa el valor central. "
+                    "La desviación estándar permite observar la dispersión "
+                    "de los datos."
+                )
+
+            else:
+
+                st.warning(
+                    "No se encontraron variables numéricas."
+                )
+
+
+        # --------------------------------------------------
+        # ITEM 4
+        # --------------------------------------------------
+
+        elif item == "Ítem 4: Valores nulos":
+
+            st.header("Ítem 4: Valores nulos")
+
+            nulos = df.isnull().sum()
+
+            tabla_nulos = pd.DataFrame({
+                "Variable": df.columns,
+                "Valores nulos": nulos.values
+            })
+
+            tabla_nulos = tabla_nulos.sort_values(
+                by="Valores nulos",
+                ascending=False
+            )
+
+            st.dataframe(
+                tabla_nulos,
+                use_container_width=True
+            )
+
+            total_nulos = df.isnull().sum().sum()
+
+            st.metric(
+                "Total de valores nulos",
+                int(total_nulos)
+            )
+
+            variables_con_nulos = (
+                tabla_nulos[
+                    tabla_nulos["Valores nulos"] > 0
+                ]
+            )
+
+            if len(variables_con_nulos) > 0:
+
+                st.subheader(
+                    "Variables con valores nulos"
+                )
+
+                fig, ax = plt.subplots(
+                    figsize=(10, 5)
+                )
+
+                ax.bar(
+                    variables_con_nulos["Variable"].astype(str),
+                    variables_con_nulos["Valores nulos"]
+                )
+
+                ax.set_xlabel("Variable")
+                ax.set_ylabel("Cantidad de valores nulos")
+                ax.set_title("Valores nulos por variable")
+
+                plt.xticks(rotation=45)
+
+                st.pyplot(
+                    fig,
+                    clear_figure=True
+                )
+
+                plt.close(fig)
+
+            else:
+
+                st.success(
+                    "El Dataset no contiene valores nulos."
+                )
+
+
+        # --------------------------------------------------
+        # ITEM 5
+        # --------------------------------------------------
+
+        elif item == "Ítem 5: Distribución numérica":
+
+            st.header("Ítem 5: Distribución de variables numéricas")
+
+            variables_numericas = df.select_dtypes(
+                include="number"
+            ).columns.tolist()
+
+            if len(variables_numericas) == 0:
+
+                st.warning(
+                    "No se encontraron variables numéricas."
+                )
+
+            else:
+
+                st.write(
+                    "Se muestran histogramas para observar la "
+                    "distribución de las variables numéricas."
+                )
+
+                for variable in variables_numericas:
+
+                    datos = pd.to_numeric(
+                        df[variable],
+                        errors="coerce"
+                    ).dropna()
+
+                    if len(datos) == 0:
+                        continue
+
+                    st.subheader(
+                        f"Distribución de {variable}"
+                    )
+
+                    fig, ax = plt.subplots(
+                        figsize=(9, 5)
+                    )
+
+                    ax.hist(
+                        datos,
+                        bins=20
+                    )
+
+                    ax.set_title(
+                        f"Distribución de {variable}"
+                    )
+
+                    ax.set_xlabel(variable)
+                    ax.set_ylabel("Frecuencia")
+
+                    st.pyplot(
+                        fig,
+                        clear_figure=True
+                    )
+
+                    plt.close(fig)
+
+                    st.write(
+                        f"Los valores de **{variable}** presentan "
+                        f"un total de {len(datos)} observaciones "
+                        f"válidas."
+                    )
+
+
+        # --------------------------------------------------
+        # ITEM 6
+        # --------------------------------------------------
+
+        elif item == "Ítem 6: Variables categóricas":
+
+            st.header("Ítem 6: Variables categóricas")
+
+            variables_categoricas = df.select_dtypes(
+                include=["object", "category"]
+            ).columns.tolist()
+
+            if len(variables_categoricas) == 0:
+
+                st.warning(
+                    "No se encontraron variables categóricas."
+                )
+
+            else:
+
+                for variable in variables_categoricas:
+
+                    st.subheader(
+                        f"Variable: {variable}"
+                    )
+
+                    conteo = (
+                        df[variable]
+                        .fillna("Valores nulos")
+                        .astype(str)
+                        .value_counts()
+                    )
+
+                    proporcion = (
+                        conteo / conteo.sum() * 100
+                    ).round(2)
+
+                    tabla = pd.DataFrame({
+                        "Categoría": conteo.index,
+                        "Frecuencia": conteo.values,
+                        "Porcentaje (%)": proporcion.values
+                    })
+
+                    st.dataframe(
+                        tabla,
+                        use_container_width=True
+                    )
+
+                    fig, ax = plt.subplots(
+                        figsize=(10, 5)
+                    )
+
+                    ax.bar(
+                        conteo.index.astype(str),
+                        conteo.values
+                    )
+
+                    ax.set_title(
+                        f"Distribución de {variable}"
+                    )
+
+                    ax.set_xlabel(variable)
+                    ax.set_ylabel("Frecuencia")
+
+                    plt.xticks(
+                        rotation=45,
+                        ha="right"
+                    )
+
+                    st.pyplot(
+                        fig,
+                        clear_figure=True
+                    )
+
+                    plt.close(fig)
+
+
+        # --------------------------------------------------
+        # ITEM 7
+        # --------------------------------------------------
+
+        elif item == "Ítem 7: Numérico vs categórico":
+
+            st.header(
+                "Ítem 7: Análisis numérico vs categórico"
+            )
+
+            if "Churn" in df.columns:
+
+                variables = [
+                    variable
+                    for variable in [
+                        "MonthlyCharges",
+                        "tenure"
+                    ]
+                    if variable in df.columns
+                    and pd.api.types.is_numeric_dtype(
+                        df[variable]
+                    )
+                ]
+
+                if len(variables) > 0:
+
+                    for variable in variables:
+
+                        st.subheader(
+                            f"{variable} vs Churn"
+                        )
+
+                        fig, ax = plt.subplots(
+                            figsize=(8, 5)
+                        )
+
+                        sns.boxplot(
+                            data=df,
+                            x="Churn",
+                            y=variable,
+                            ax=ax
+                        )
+
+                        ax.set_title(
+                            f"{variable} según Churn"
+                        )
+
+                        st.pyplot(
+                            fig,
+                            clear_figure=True
+                        )
+
+                        plt.close(fig)
+
+                        resumen = df.groupby(
+                            "Churn"
+                        )[variable].agg(
+                            [
+                                "mean",
+                                "median",
+                                "std"
+                            ]
+                        )
+
+                        st.dataframe(
+                            resumen.round(2),
+                            use_container_width=True
+                        )
 
                 else:
-                    categoricas.append(columna)
 
-            return numericas, categoricas
+                    st.warning(
+                        "No se encontraron las variables "
+                        "numéricas necesarias."
+                    )
 
-        variables_numericas, variables_categoricas = clasificar_variables(df)
+            else:
 
-        st.write("Variables numéricas")
-
-        st.write(
-            f"Cantidad de variables numéricas: "
-            f"{len(variables_numericas)}"
-        )
-
-        st.dataframe(
-            pd.DataFrame({
-                "Variable": variables_numericas
-            })
-        )
-
-        st.write("Variables categóricas")
-
-        st.write(
-            f"Cantidad de variables categóricas: "
-            f"{len(variables_categoricas)}"
-        )
-
-        st.dataframe(
-            pd.DataFrame({
-                "Variable": variables_categoricas
-            })
-        )
-
-        st.write("Conteo de variables")
-
-        conteo_variables = pd.DataFrame({
-            "Tipo de variable": [
-                "Numéricas",
-                "Categóricas"
-            ],
-            "Cantidad": [
-                len(variables_numericas),
-                len(variables_categoricas)
-            ]
-        })
-
-        st.dataframe(conteo_variables)
+                st.warning(
+                    "La variable Churn no se encuentra "
+                    "en el Dataset."
+                )
 
 
-        st.subheader("Ítem 3: Estadísticas descriptivas")
+        # --------------------------------------------------
+        # ITEM 8
+        # --------------------------------------------------
 
-        st.write(
-            "En este ítem se calculan estadísticas descriptivas de las "
-            "variables numéricas del dataset. Se analizan medidas como "
-            "la media, mediana, desviación estándar, mínimo y máximo."
-        )
+        elif item == "Ítem 8: Categórico vs categórico":
 
-        st.write("Estadísticas descriptivas")
-
-        estadisticas = df.describe()
-
-        st.dataframe(estadisticas)
-
-        st.write(
-            "La media representa el valor promedio de cada variable, "
-            "mientras que la mediana corresponde al valor central. "
-            "La desviación estándar permite observar la dispersión "
-            "de los datos respecto a la media. Los valores mínimo y "
-            "máximo permiten identificar el rango de cada variable."
-        )
-
-
-        st.subheader("Ítem 4: Análisis de valores nulos")
-
-        st.write(
-            "En este ítem se analiza la cantidad de valores nulos "
-            "presentes en cada variable y se presenta una visualización "
-            "para identificar las variables que contienen datos faltantes."
-        )
-
-        nulos = df.isnull().sum()
-
-        tabla_nulos = pd.DataFrame({
-            "Variable": nulos.index,
-            "Valores nulos": nulos.values
-        })
-
-        st.dataframe(tabla_nulos)
-
-        if nulos.sum() > 0:
-
-            nulos_grafico = nulos[nulos > 0]
-
-            fig, ax = plt.subplots(figsize=(10, 5))
-
-            nulos_grafico.plot(
-                kind="bar",
-                ax=ax
+            st.header(
+                "Ítem 8: Análisis categórico vs categórico"
             )
 
-            ax.set_title("Cantidad de valores nulos por variable")
-            ax.set_xlabel("Variables")
-            ax.set_ylabel("Cantidad de valores nulos")
+            if "Churn" in df.columns:
 
-            plt.xticks(rotation=45, ha="right")
+                variables = [
+                    variable
+                    for variable in [
+                        "Contract",
+                        "InternetService"
+                    ]
+                    if variable in df.columns
+                ]
 
-            st.pyplot(fig)
+                for variable in variables:
 
-            st.write(
-                "Las variables que presentan valores nulos requieren "
-                "una revisión antes de realizar análisis posteriores, "
-                "ya que los datos faltantes pueden afectar los resultados."
+                    st.subheader(
+                        f"{variable} vs Churn"
+                    )
+
+                    tabla = pd.crosstab(
+                        df[variable],
+                        df["Churn"]
+                    )
+
+                    st.dataframe(
+                        tabla,
+                        use_container_width=True
+                    )
+
+                    porcentajes = pd.crosstab(
+                        df[variable],
+                        df["Churn"],
+                        normalize="index"
+                    ) * 100
+
+                    st.write(
+                        "Porcentajes por categoría:"
+                    )
+
+                    st.dataframe(
+                        porcentajes.round(2),
+                        use_container_width=True
+                    )
+
+                    fig, ax = plt.subplots(
+                        figsize=(9, 5)
+                    )
+
+                    tabla.plot(
+                        kind="bar",
+                        ax=ax
+                    )
+
+                    ax.set_title(
+                        f"{variable} vs Churn"
+                    )
+
+                    ax.set_xlabel(variable)
+                    ax.set_ylabel("Cantidad de clientes")
+
+                    plt.xticks(
+                        rotation=45,
+                        ha="right"
+                    )
+
+                    st.pyplot(
+                        fig,
+                        clear_figure=True
+                    )
+
+                    plt.close(fig)
+
+            else:
+
+                st.warning(
+                    "La variable Churn no se encuentra "
+                    "en el Dataset."
+                )
+
+
+        # --------------------------------------------------
+        # ITEM 9
+        # --------------------------------------------------
+
+        elif item == "Ítem 9: Parámetros seleccionados":
+
+            st.header(
+                "Ítem 9: Análisis mediante parámetros seleccionados"
             )
 
-        else:
+            variables_numericas = df.select_dtypes(
+                include="number"
+            ).columns.tolist()
 
-            st.success(
-                "El dataset no presenta valores nulos."
-            )
+            variables_categoricas = df.select_dtypes(
+                include=["object", "category"]
+            ).columns.tolist()
+
+            if len(variables_numericas) > 0:
+
+                variable_numerica = st.selectbox(
+                    "Seleccione una variable numérica",
+                    variables_numericas
+                )
+
+                datos = pd.to_numeric(
+                    df[variable_numerica],
+                    errors="coerce"
+                ).dropna()
+
+                fig, ax = plt.subplots(
+                    figsize=(9, 5)
+                )
+
+                ax.hist(
+                    datos,
+                    bins=20
+                )
+
+                ax.set_title(
+                    f"Distribución de {variable_numerica}"
+                )
+
+                ax.set_xlabel(
+                    variable_numerica
+                )
+
+                ax.set_ylabel(
+                    "Frecuencia"
+                )
+
+                st.pyplot(
+                    fig,
+                    clear_figure=True
+                )
+
+                plt.close(fig)
+
+            if len(variables_categoricas) > 0:
+
+                variables_seleccionadas = st.multiselect(
+                    "Seleccione variables categóricas",
+                    variables_categoricas
+                )
+
+                for variable in variables_seleccionadas:
+
+                    st.subheader(
+                        f"Análisis de {variable}"
+                    )
+
+                    conteo = (
+                        df[variable]
+                        .fillna("Valores nulos")
+                        .astype(str)
+                        .value_counts()
+                    )
+
+                    st.dataframe(
+                        conteo.to_frame(
+                            "Frecuencia"
+                        ),
+                        use_container_width=True
+                    )
+
+                    fig, ax = plt.subplots(
+                        figsize=(9, 5)
+                    )
+
+                    ax.bar(
+                        conteo.index,
+                        conteo.values
+                    )
+
+                    ax.set_title(
+                        f"Distribución de {variable}"
+                    )
+
+                    ax.set_xlabel(variable)
+                    ax.set_ylabel("Frecuencia")
+
+                    plt.xticks(
+                        rotation=45,
+                        ha="right"
+                    )
+
+                    st.pyplot(
+                        fig,
+                        clear_figure=True
+                    )
+
+                    plt.close(fig)
 
 
-        st.subheader("Ítem 5: Distribución de variables numéricas")
+        # --------------------------------------------------
+        # ITEM 10
+        # --------------------------------------------------
 
-        st.write(
-            "En este ítem se analiza la distribución de las variables "
-            "numéricas mediante histogramas. Los histogramas permiten "
-            "observar la concentración y dispersión de los valores."
-        )
+        elif item == "Ítem 10: Hallazgos clave":
 
-        for columna in variables_numericas:
+            st.header("Ítem 10: Hallazgos clave")
 
-            fig, ax = plt.subplots(figsize=(8, 4))
+            if "Churn" in df.columns:
 
-            sns.histplot(
-                data=df,
-                x=columna,
-                kde=True,
-                ax=ax
-            )
+                churn_counts = (
+                    df["Churn"]
+                    .fillna("Valores nulos")
+                    .astype(str)
+                    .value_counts()
+                )
 
-            ax.set_title(
-                f"Distribución de {columna}"
-            )
+                total_clientes = len(df)
 
-            ax.set_xlabel(columna)
-            ax.set_ylabel("Frecuencia")
+                clientes_churn = (
+                    churn_counts.get("Yes", 0)
+                )
 
-            st.pyplot(fig)
+                porcentaje_churn = (
+                    clientes_churn /
+                    total_clientes * 100
+                    if total_clientes > 0
+                    else 0
+                )
 
-            st.write(
-                f"El histograma de {columna} permite observar cómo "
-                "se distribuyen sus valores y dónde se concentra "
-                "la mayor frecuencia de registros."
-            )
+                col1, col2 = st.columns(2)
 
+                with col1:
 
-        st.subheader("Ítem 6: Análisis de variables categóricas")
+                    st.metric(
+                        "Clientes analizados",
+                        total_clientes
+                    )
 
-        st.write(
-            "En este ítem se analizan las variables categóricas mediante "
-            "el conteo de sus categorías y gráficos de barras. Esto permite "
-            "identificar las categorías con mayor frecuencia."
-        )
+                with col2:
 
-        for columna in variables_categoricas:
+                    st.metric(
+                        "Tasa de Churn",
+                        f"{porcentaje_churn:.2f}%"
+                    )
 
-            st.write(f"Variable: {columna}")
+                st.subheader(
+                    "Distribución de Churn"
+                )
 
-            conteo = df[columna].value_counts(dropna=False)
+                fig, ax = plt.subplots(
+                    figsize=(8, 5)
+                )
 
-            tabla_categorias = pd.DataFrame({
-                "Categoría": conteo.index.astype(str),
-                "Cantidad": conteo.values,
-                "Proporción": (
-                    conteo.values / len(df)
-                ).round(4)
-            })
+                ax.bar(
+                    churn_counts.index.astype(str),
+                    churn_counts.values
+                )
 
-            st.dataframe(tabla_categorias)
+                ax.set_xlabel("Churn")
+                ax.set_ylabel("Cantidad de clientes")
+                ax.set_title(
+                    "Distribución de clientes según Churn"
+                )
 
-            fig, ax = plt.subplots(figsize=(9, 4))
+                st.pyplot(
+                    fig,
+                    clear_figure=True
+                )
 
-            sns.countplot(
-                data=df,
-                x=columna,
-                ax=ax
-            )
+                plt.close(fig)
 
-            ax.set_title(
-                f"Distribución de {columna}"
-            )
+                st.subheader(
+                    "Principales hallazgos"
+                )
 
-            ax.set_xlabel(columna)
-            ax.set_ylabel("Cantidad")
+                if "tenure" in df.columns:
 
-            plt.xticks(rotation=45, ha="right")
+                    promedio_tenure = df.groupby(
+                        "Churn"
+                    )["tenure"].mean()
 
-            st.pyplot(fig)
+                    st.write(
+                        "• Se puede comparar la permanencia "
+                        "promedio de los clientes que permanecen "
+                        "con aquellos que abandonan el servicio."
+                    )
 
-            st.write(
-                f"El gráfico permite identificar las categorías más "
-                f"frecuentes de la variable {columna} y comparar "
-                "su participación dentro del dataset."
-            )
+                    st.dataframe(
+                        promedio_tenure.round(2).to_frame(
+                            "Promedio de tenure"
+                        ),
+                        use_container_width=True
+                    )
+
+                if "MonthlyCharges" in df.columns:
+
+                    promedio_cargos = df.groupby(
+                        "Churn"
+                    )["MonthlyCharges"].mean()
+
+                    st.write(
+                        "• Se puede analizar la diferencia en "
+                        "los cargos mensuales promedio entre "
+                        "clientes con y sin Churn."
+                    )
+
+                    st.dataframe(
+                        promedio_cargos.round(2).to_frame(
+                            "Promedio de MonthlyCharges"
+                        ),
+                        use_container_width=True
+                    )
+
+                st.write(
+                    "• El análisis exploratorio permite identificar "
+                    "variables y patrones asociados al abandono "
+                    "de clientes."
+                )
+
+            else:
+
+                st.warning(
+                    "La variable Churn no se encuentra "
+                    "en el Dataset."
+                )
