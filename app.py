@@ -1,467 +1,1045 @@
 import streamlit as st
-import numpy as np
 import pandas as pd
-import libreria_funciones_proyecto1 as lf
-import librería_clases_proyecto1 as lc
+import io
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
-st.title("TRABAJO PRÁCTICO MÓDULO I")
+st.set_page_config(
+    page_title="Proyecto Análisis Churn",
+    layout="wide"
+)
 
-st.sidebar.markdown(
-    "<h2 style='text-align: center;'>Módulos</h2>",
-    unsafe_allow_html=True)
 
-st.sidebar.image("Python.png", width=150)
+# =========================
+# TÍTULO E IMÁGENES
+# =========================
+
+st.title("Proyecto Análisis Churn")
+
+st.image("imagen1.jpg")
+
+st.sidebar.image("internet.jpg", width=150)
+
+
+# =========================
+# MENÚ PRINCIPAL
+# =========================
 
 Módulos = st.sidebar.selectbox(
     "Desplegar",
-    ["Home", "Ejercicio 1", "Ejercicio 2", "Ejercicio 3", "Ejercicio 4"])
+    [
+        "Home",
+        "Carga del Data Set",
+        "Ítem 1: Información general",
+        "Ítem 2: Clasificación de variables",
+        "Ítem 3: Estadísticas descriptivas",
+        "Ítem 4: Valores nulos",
+        "Ítem 5: Distribución numérica",
+        "Ítem 6: Variables categóricas",
+        "Ítem 7: Numérico vs categórico",
+        "Ítem 8: Categórico vs categórico",
+        "Ítem 9: Parámetros seleccionados",
+        "Ítem 10: Hallazgos clave"
+    ]
+)
 
 
-# ==========================================================
+# =========================
 # HOME
-# ==========================================================
+# =========================
 
 if Módulos == "Home":
 
-    st.write("Trabajo Módulo I")
-    st.image("prog.png", width=300)
-    st.write("Marlon Jerson Rojas Novoa")
-    st.write("Módulo I")
+    st.header("Telco Customer Churn")
+
+    st.subheader("Objetivo del proyecto")
 
     st.write(
-        "Ingeniero con interés en tecnología, análisis y gestión de datos, "
-        "orientado al aprendizaje continuo y la innovación")
-
-    st.write("Año: 2026")
-
-    st.write(
-        "Aplicación web desarrollada en Python para realizar cálculos, "
-        "registrar resultados históricos y visualizar información mediante "
-        "una interfaz interactiva.")
-
-    st.write(
-        "Desarrollo de una aplicación interactiva para el procesamiento, "
-        "registro y visualización de datos, utilizando Python y Streamlit.")
-
-
-# ==========================================================
-# EJERCICIO 1
-# ==========================================================
-
-elif Módulos == "Ejercicio 1":
-
-    st.markdown("**Esta Plantilla Nos Ayuda A Registrar Nuestras Finanzas**")
-
-    if "movimientos" not in st.session_state:
-        st.session_state.movimientos = []
-
-    Movimiento = st.text_input("Concepto")
-
-    st.markdown("**Datos del movimiento**")
-
-    Tipo = st.selectbox(
-        "Tipo de movimiento",
-        ["Ingreso", "Gasto"])
-
-    Valor = st.number_input(
-        "Valor",
-        min_value=0.0,
-        value=0.0)
-
-    if st.button("Registrar movimiento"):
-
-        nuevo_movimiento = {
-            "Concepto": Movimiento,
-            "Tipo": Tipo,
-            "Valor": Valor
-        }
-
-        st.session_state.movimientos.append(nuevo_movimiento)
-
-        st.success("Movimiento registrado correctamente")
-
-    st.markdown("### Lista de movimientos registrados")
-
-    for movimiento in st.session_state.movimientos:
-        st.write(movimiento)
-
-    total_ingresos = sum(
-        movimiento["Valor"]
-        for movimiento in st.session_state.movimientos
-        if movimiento["Tipo"] == "Ingreso")
-
-    total_gastos = sum(
-        movimiento["Valor"]
-        for movimiento in st.session_state.movimientos
-        if movimiento["Tipo"] == "Gasto")
-
-    saldo_final = total_ingresos - total_gastos
-
-    st.markdown("### Resumen financiero")
-
-    st.write("**Total de ingresos:**", total_ingresos)
-    st.write("**Total de gastos:**", total_gastos)
-    st.write("**Saldo final:**", saldo_final)
-
-    if saldo_final > 0:
-        st.success(f"Flujo de caja a favor: {saldo_final}")
-
-    elif saldo_final < 0:
-        st.error(f"Flujo de caja en contra: {saldo_final}")
-
-    else:
-        st.info("El flujo de caja está en equilibrio")
-
-
-# ==========================================================
-# EJERCICIO 2
-# ==========================================================
-
-elif Módulos == "Ejercicio 2":
-
-    st.title("Registro de Productos")
-
-    st.markdown(
         """
-        Esta aplicación permite registrar productos mediante un formulario.
-        Cada registro contiene el nombre, categoría, precio, cantidad y total.
-        Al presionar el botón "Agregar producto", la información se almacena
-        y se muestra en una tabla actualizada.
-        """)
+        El objetivo de este proyecto es analizar el comportamiento de los
+        clientes de una empresa de telecomunicaciones e identificar
+        características y patrones relacionados con la cancelación del
+        servicio (Churn), con la finalidad de apoyar la toma de decisiones.
+        """
+    )
 
-    # Crear los arrays en session_state
+    st.subheader("Datos del autor")
 
-    if "nombres" not in st.session_state:
-        st.session_state.nombres = np.array([])
+    st.write("**Nombre completo:** Marlon Jerson Rojas Novoa")
+    st.write("**Curso / Especialización:** Data Science")
+    st.write("**Año:** 2026")
 
-    if "categorias" not in st.session_state:
-        st.session_state.categorias = np.array([])
+    st.subheader("Descripción del dataset")
 
-    if "precios" not in st.session_state:
-        st.session_state.precios = np.array([])
+    st.write(
+        """
+        El dataset contiene información de clientes de una empresa de
+        telecomunicaciones, incluyendo características demográficas,
+        servicios contratados, información de facturación, antigüedad
+        del cliente y la variable Churn.
+        """
+    )
 
-    if "cantidades" not in st.session_state:
-        st.session_state.cantidades = np.array([])
+    st.subheader("Tecnologías utilizadas")
 
-    if "totales" not in st.session_state:
-        st.session_state.totales = np.array([])
+    st.write(
+        """
+        - Python
+        - Pandas
+        - Streamlit
+        - Matplotlib
+        - Seaborn
+        - NumPy
+        """
+    )
 
-    # Formulario
 
-    st.markdown("### Ingreso de datos")
+# =========================
+# CARGA DEL DATA SET
+# =========================
 
-    nombre = st.text_input("Nombre del producto")
+elif Módulos == "Carga del Data Set":
 
-    categoria = st.selectbox(
-        "Categoría",
-        ["Bebidas", "Alimentos", "Limpieza", "Tecnología"])
+    st.header("Carga del Data Set")
 
-    precio = st.number_input(
-        "Precio",
-        min_value=0.0,
-        step=0.10)
+    archivo = st.file_uploader(
+        "Cargar archivo CSV",
+        type=["csv"]
+    )
 
-    cantidad = st.number_input(
-        "Cantidad",
-        min_value=1,
-        step=1)
+    if archivo is not None:
 
-    # Calcular total
+        st.success("Archivo cargado correctamente.")
 
-    total = precio * cantidad
+        df = pd.read_csv(
+            archivo,
+            sep=","
+        )
 
-    st.write(f"**Total: S/ {total:.2f}**")
+        st.session_state["df"] = df
 
-    # Botón para agregar
-
-    if st.button("Agregar producto"):
-
-        if nombre == "":
-            st.warning("Ingresa el nombre del producto.")
-
-        else:
-
-            st.session_state.nombres = np.append(
-                st.session_state.nombres,
-                nombre)
-
-            st.session_state.categorias = np.append(
-                st.session_state.categorias,
-                categoria)
-
-            st.session_state.precios = np.append(
-                st.session_state.precios,
-                precio)
-
-            st.session_state.cantidades = np.append(
-                st.session_state.cantidades,
-                cantidad)
-
-            st.session_state.totales = np.append(
-                st.session_state.totales,
-                total)
-
-            st.success("Producto agregado correctamente.")
-
-    # Crear DataFrame
-
-    df = pd.DataFrame({
-        "Producto": st.session_state.nombres,
-        "Categoría": st.session_state.categorias,
-        "Precio": st.session_state.precios,
-        "Cantidad": st.session_state.cantidades,
-        "Total": st.session_state.totales
-    })
-
-    # Mostrar DataFrame
-
-    st.markdown("### Registros")
-
-    st.dataframe(df, use_container_width=True)
-
-
-# ==========================================================
-# EJERCICIO 3
-# ==========================================================
-
-elif Módulos == "Ejercicio 3":
-
-    st.write("Solución Ejercicio 3")
-
-    # Selector de función
-
-    funcion = st.selectbox(
-        "Seleccione una función:",
-        ["Calcular IMC"])
-
-    if funcion == "Calcular IMC":
-
-        # Ingreso de parámetros
-
-        peso = st.number_input(
-            "Ingrese su peso (kg):",
-            min_value=1.0,
-            value=70.0,
-            step=0.1)
-
-        altura = st.number_input(
-            "Ingrese su altura (m):",
-            min_value=0.5,
-            value=1.70,
-            step=0.01)
-
-        # Botón para ejecutar
-
-        if st.button("Calcular IMC"):
-
-            # Usamos la función de la librería
-
-            resultado = lf.calcular_imc(peso, altura)
-
-            # Mostrar resultado
-
-            st.write("Resultado del cálculo:")
-            st.write("IMC:", resultado["imc"])
-            st.write("Clasificación:", resultado["clasificacion"])
-
-            # Guardar resultado
-
-            registro = {
-                "Peso (kg)": peso,
-                "Altura (m)": altura,
-                "IMC": resultado["imc"],
-                "Clasificación": resultado["clasificacion"]
-            }
-
-            if "historico_imc" not in st.session_state:
-                st.session_state.historico_imc = []
-
-            st.session_state.historico_imc.append(registro)
-
-    # Mostrar histórico
-
-    st.write("Histórico de resultados:")
-
-    if "historico_imc" in st.session_state:
-
-        df_historico = pd.DataFrame(
-            st.session_state.historico_imc)
-
-        st.dataframe(df_historico)
-
-    else:
-        st.write("Aún no hay resultados registrados.")
-
-
-# ==========================================================
-# EJERCICIO 4 - CRUD CON CLASE EMPLEADO
-# ==========================================================
-
-elif Módulos == "Ejercicio 4":
-
-    st.write("Administración de Empleados")
-
-    # Crear lista de empleados
-
-    if "empleados" not in st.session_state:
-        st.session_state.empleados = []
-
-    # ======================================================
-    # CREAR
-    # ======================================================
-
-    st.markdown("### Crear empleado")
-
-    nombre = st.text_input("Nombre del empleado")
-
-    salario = st.number_input(
-        "Salario base",
-        min_value=0.0,
-        value=0.0,
-        step=100.0)
-
-    bono = st.number_input(
-        "Porcentaje de bono (%)",
-        min_value=0.0,
-        max_value=100.0,
-        value=0.0,
-        step=1.0)
-
-    descuento = st.number_input(
-        "Porcentaje de descuento (%)",
-        min_value=0.0,
-        max_value=100.0,
-        value=0.0,
-        step=1.0)
-
-    if st.button("Crear empleado"):
-
-        if nombre == "":
-            st.warning("Ingrese el nombre del empleado.")
-
-        elif salario <= 0:
-            st.warning("El salario debe ser mayor que 0.")
-
-        else:
-
-            empleado = lc.Empleado(
-                nombre,
-                salario,
-                bono,
-                descuento)
-
-            st.session_state.empleados.append(empleado)
-
-            st.success("Empleado creado correctamente.")
-
-    # ======================================================
-    # LEER
-    # ======================================================
-
-    st.markdown("### Lista de empleados")
-
-    if len(st.session_state.empleados) > 0:
-
-        datos = []
-
-        for empleado in st.session_state.empleados:
-            datos.append(empleado.resumen())
-
-        df_empleados = pd.DataFrame(datos)
+        st.subheader("Vista previa")
 
         st.dataframe(
-            df_empleados,
-            use_container_width=True)
+            df.head(),
+            use_container_width=True
+        )
+
+        st.subheader("Dimensiones del Data Set")
+
+        filas, columnas = df.shape
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.metric(
+                "Número de filas",
+                filas
+            )
+
+        with col2:
+            st.metric(
+                "Número de columnas",
+                columnas
+            )
 
     else:
 
-        st.info("Aún no hay empleados registrados.")
+        st.info(
+            "Cargue un archivo CSV para comenzar el análisis."
+        )
 
-    # ======================================================
-    # ACTUALIZAR
-    # ======================================================
 
-    st.markdown("### Actualizar empleado")
+# =========================
+# RESTO DE LOS ÍTEMS
+# =========================
 
-    if len(st.session_state.empleados) > 0:
+elif Módulos != "Home" and Módulos != "Carga del Data Set":
 
-        nombres = [
-            empleado.nombre
-            for empleado in st.session_state.empleados
-        ]
+    if "df" not in st.session_state:
 
-        empleado_seleccionado = st.selectbox(
-            "Seleccione el empleado:",
-            nombres)
-
-        indice = nombres.index(empleado_seleccionado)
-
-        empleado = st.session_state.empleados[indice]
-
-        nuevo_nombre = st.text_input(
-            "Nuevo nombre",
-            value=empleado.nombre)
-
-        nuevo_salario = st.number_input(
-            "Nuevo salario base",
-            min_value=0.0,
-            value=float(empleado.salario_base),
-            step=100.0)
-
-        nuevo_bono = st.number_input(
-            "Nuevo porcentaje de bono (%)",
-            min_value=0.0,
-            max_value=100.0,
-            value=float(empleado.porcentaje_bono),
-            step=1.0)
-
-        nuevo_descuento = st.number_input(
-            "Nuevo porcentaje de descuento (%)",
-            min_value=0.0,
-            max_value=100.0,
-            value=float(empleado.porcentaje_descuento),
-            step=1.0)
-
-        if st.button("Actualizar empleado"):
-
-            empleado.nombre = nuevo_nombre
-            empleado.salario_base = nuevo_salario
-            empleado.porcentaje_bono = nuevo_bono
-            empleado.porcentaje_descuento = nuevo_descuento
-
-            st.success("Empleado actualizado correctamente.")
+        st.warning(
+            "Primero debe cargar un archivo CSV en 'Carga del Data Set'."
+        )
 
     else:
 
-        st.info("No hay empleados para actualizar.")
+        df = st.session_state["df"]
 
-    # ======================================================
-    # ELIMINAR
-    # ======================================================
 
-    st.markdown("### Eliminar empleado")
+        # =========================
+        # ÍTEM 1
+        # =========================
 
-    if len(st.session_state.empleados) > 0:
+        if Módulos == "Ítem 1: Información general":
 
-        nombres_eliminar = [
-            empleado.nombre
-            for empleado in st.session_state.empleados
-        ]
+            st.header("Ítem 1: Información general del Data Set")
 
-        empleado_eliminar = st.selectbox(
-            "Seleccione el empleado a eliminar:",
-            nombres_eliminar,
-            key="empleado_eliminar")
+            st.subheader("Información general")
 
-        if st.button("Eliminar empleado"):
+            buffer = io.StringIO()
 
-            indice = nombres_eliminar.index(empleado_eliminar)
+            df.info(buf=buffer)
 
-            st.session_state.empleados.pop(indice)
+            st.text(
+                buffer.getvalue()
+            )
 
-            st.success("Empleado eliminado correctamente.")
+            st.subheader("Tipos de datos")
 
-    else:
+            tipos_datos = pd.DataFrame(
+                {
+                    "Variable": df.columns,
+                    "Tipo de dato": df.dtypes.astype(str)
+                }
+            )
 
-        st.info("No hay empleados para eliminar.")
+            st.dataframe(
+                tipos_datos,
+                use_container_width=True
+            )
+
+            st.subheader("Valores nulos")
+
+            valores_nulos = pd.DataFrame(
+                {
+                    "Variable": df.columns,
+                    "Valores nulos": df.isnull().sum()
+                }
+            )
+
+            st.dataframe(
+                valores_nulos,
+                use_container_width=True
+            )
+
+            st.write(
+                f"El Data Set contiene **{df.shape[0]} filas** y "
+                f"**{df.shape[1]} columnas**."
+            )
+
+
+        # =========================
+        # ÍTEM 2
+        # =========================
+
+        elif Módulos == "Ítem 2: Clasificación de variables":
+
+            st.header("Ítem 2: Clasificación de variables")
+
+            def clasificar_variables(dataframe):
+
+                variables_numericas = []
+                variables_categoricas = []
+
+                for columna in dataframe.columns:
+
+                    if pd.api.types.is_numeric_dtype(
+                        dataframe[columna]
+                    ):
+
+                        variables_numericas.append(columna)
+
+                    else:
+
+                        variables_categoricas.append(columna)
+
+                return (
+                    variables_numericas,
+                    variables_categoricas
+                )
+
+            variables_numericas, variables_categoricas = (
+                clasificar_variables(df)
+            )
+
+            st.subheader("Variables numéricas")
+
+            st.write(
+                f"Cantidad: **{len(variables_numericas)}**"
+            )
+
+            st.dataframe(
+                pd.DataFrame(
+                    {
+                        "Variable": variables_numericas
+                    }
+                ),
+                use_container_width=True
+            )
+
+            st.subheader("Variables categóricas")
+
+            st.write(
+                f"Cantidad: **{len(variables_categoricas)}**"
+            )
+
+            st.dataframe(
+                pd.DataFrame(
+                    {
+                        "Variable": variables_categoricas
+                    }
+                ),
+                use_container_width=True
+            )
+
+            st.subheader("Resumen")
+
+            resumen = pd.DataFrame(
+                {
+                    "Tipo de variable": [
+                        "Numéricas",
+                        "Categóricas"
+                    ],
+                    "Cantidad": [
+                        len(variables_numericas),
+                        len(variables_categoricas)
+                    ]
+                }
+            )
+
+            st.dataframe(
+                resumen,
+                use_container_width=True
+            )
+
+
+        # =========================
+        # ÍTEM 3
+        # =========================
+
+        elif Módulos == "Ítem 3: Estadísticas descriptivas":
+
+            st.header("Ítem 3: Estadísticas descriptivas")
+
+            st.subheader("Estadísticas descriptivas")
+
+            st.dataframe(
+                df.describe(),
+                use_container_width=True
+            )
+
+            st.subheader("Interpretación")
+
+            st.write(
+                """
+                La **media** representa el promedio de los valores.
+
+                La **mediana** representa el valor central de los datos
+                ordenados.
+
+                La **desviación estándar** permite conocer la dispersión
+                de los valores respecto a la media.
+                """
+            )
+
+
+        # =========================
+        # ÍTEM 4
+        # =========================
+
+        elif Módulos == "Ítem 4: Valores nulos":
+
+            st.header("Ítem 4: Análisis de valores nulos")
+
+            valores_nulos = df.isnull().sum()
+
+            tabla_nulos = pd.DataFrame(
+                {
+                    "Variable": valores_nulos.index,
+                    "Valores nulos": valores_nulos.values
+                }
+            )
+
+            st.dataframe(
+                tabla_nulos,
+                use_container_width=True
+            )
+
+            total_nulos = valores_nulos.sum()
+
+            st.write(
+                f"Total de valores nulos: **{total_nulos}**"
+            )
+
+            if total_nulos > 0:
+
+                columnas_con_nulos = valores_nulos[
+                    valores_nulos > 0
+                ]
+
+                st.subheader(
+                    "Visualización de valores nulos"
+                )
+
+                fig, ax = plt.subplots(
+                    figsize=(10, 5)
+                )
+
+                columnas_con_nulos.plot(
+                    kind="bar",
+                    ax=ax
+                )
+
+                ax.set_title(
+                    "Cantidad de valores nulos por variable"
+                )
+
+                ax.set_xlabel(
+                    "Variable"
+                )
+
+                ax.set_ylabel(
+                    "Cantidad"
+                )
+
+                plt.xticks(
+                    rotation=45
+                )
+
+                st.pyplot(fig)
+
+                plt.close()
+
+            else:
+
+                st.success(
+                    "No se encontraron valores nulos."
+                )
+
+
+        # =========================
+        # ÍTEM 5
+        # =========================
+
+        elif Módulos == "Ítem 5: Distribución numérica":
+
+            st.header(
+                "Ítem 5: Distribución de variables numéricas"
+            )
+
+            variables_numericas = df.select_dtypes(
+                include="number"
+            ).columns.tolist()
+
+            for variable in variables_numericas:
+
+                st.subheader(
+                    f"Distribución de {variable}"
+                )
+
+                fig, ax = plt.subplots(
+                    figsize=(8, 4)
+                )
+
+                sns.histplot(
+                    data=df,
+                    x=variable,
+                    kde=True,
+                    ax=ax
+                )
+
+                ax.set_title(
+                    f"Distribución de {variable}"
+                )
+
+                ax.set_xlabel(
+                    variable
+                )
+
+                ax.set_ylabel(
+                    "Frecuencia"
+                )
+
+                st.pyplot(fig)
+
+                plt.close()
+
+
+        # =========================
+        # ÍTEM 6
+        # =========================
+
+        elif Módulos == "Ítem 6: Variables categóricas":
+
+            st.header(
+                "Ítem 6: Análisis de variables categóricas"
+            )
+
+            variables_categoricas = df.select_dtypes(
+                exclude="number"
+            ).columns.tolist()
+
+            if not variables_categoricas:
+
+                st.info(
+                    "No se encontraron variables categóricas."
+                )
+
+            else:
+
+                for variable in variables_categoricas:
+
+                    st.subheader(
+                        f"Variable: {variable}"
+                    )
+
+                    # -------------------------
+                    # FRECUENCIAS
+                    # -------------------------
+
+                    conteo = df[
+                        variable
+                    ].value_counts(
+                        dropna=False
+                    )
+
+                    tabla_conteo = (
+                        conteo
+                        .reset_index()
+                    )
+
+                    tabla_conteo.columns = [
+                        "Categoría",
+                        "Cantidad"
+                    ]
+
+                    st.write(
+                        "Frecuencia absoluta:"
+                    )
+
+                    st.dataframe(
+                        tabla_conteo,
+                        use_container_width=True
+                    )
+
+                    # -------------------------
+                    # PROPORCIONES
+                    # -------------------------
+
+                    proporciones = (
+                        df[variable]
+                        .value_counts(
+                            normalize=True,
+                            dropna=False
+                        )
+                        .mul(100)
+                        .round(2)
+                    )
+
+                    tabla_proporciones = (
+                        proporciones
+                        .reset_index()
+                    )
+
+                    tabla_proporciones.columns = [
+                        "Categoría",
+                        "Proporción (%)"
+                    ]
+
+                    st.write(
+                        "Proporciones:"
+                    )
+
+                    st.dataframe(
+                        tabla_proporciones,
+                        use_container_width=True
+                    )
+
+                    # -------------------------
+                    # GRÁFICO DE BARRAS
+                    # -------------------------
+
+                    st.write(
+                        "Gráfico de barras:"
+                    )
+
+                    fig, ax = plt.subplots(
+                        figsize=(9, 5)
+                    )
+
+                    sns.countplot(
+                        data=df,
+                        x=variable,
+                        order=conteo.index,
+                        ax=ax
+                    )
+
+                    ax.set_title(
+                        f"Distribución de {variable}"
+                    )
+
+                    ax.set_xlabel(
+                        variable
+                    )
+
+                    ax.set_ylabel(
+                        "Cantidad de clientes"
+                    )
+
+                    plt.xticks(
+                        rotation=45,
+                        ha="right"
+                    )
+
+                    plt.tight_layout()
+
+                    st.pyplot(fig)
+
+                    plt.close()
+
+                    st.markdown("---")
+
+
+        # =========================
+        # ÍTEM 7
+        # =========================
+
+        elif Módulos == "Ítem 7: Numérico vs categórico":
+
+            st.header(
+                "Ítem 7: Análisis bivariado - Numérico vs Categórico"
+            )
+
+            if "Churn" not in df.columns:
+
+                st.warning(
+                    "La variable Churn no se encuentra en el Data Set."
+                )
+
+            else:
+
+                variables_analizar = []
+
+                if "MonthlyCharges" in df.columns:
+
+                    if pd.api.types.is_numeric_dtype(
+                        df["MonthlyCharges"]
+                    ):
+
+                        variables_analizar.append(
+                            "MonthlyCharges"
+                        )
+
+                if "tenure" in df.columns:
+
+                    if pd.api.types.is_numeric_dtype(
+                        df["tenure"]
+                    ):
+
+                        variables_analizar.append(
+                            "tenure"
+                        )
+
+                for variable in variables_analizar:
+
+                    st.subheader(
+                        f"{variable} vs Churn"
+                    )
+
+                    fig, ax = plt.subplots(
+                        figsize=(7, 5)
+                    )
+
+                    sns.boxplot(
+                        data=df,
+                        x="Churn",
+                        y=variable,
+                        ax=ax
+                    )
+
+                    ax.set_title(
+                        f"{variable} según Churn"
+                    )
+
+                    ax.set_xlabel(
+                        "Churn"
+                    )
+
+                    ax.set_ylabel(
+                        variable
+                    )
+
+                    st.pyplot(fig)
+
+                    plt.close()
+
+                    resumen = df.groupby(
+                        "Churn"
+                    )[variable].agg(
+                        [
+                            "mean",
+                            "median",
+                            "std"
+                        ]
+                    )
+
+                    st.write(
+                        "Estadísticas por Churn:"
+                    )
+
+                    st.dataframe(
+                        resumen,
+                        use_container_width=True
+                    )
+
+
+        # =========================
+        # ÍTEM 8
+        # =========================
+
+        elif Módulos == "Ítem 8: Categórico vs categórico":
+
+            st.header(
+                "Ítem 8: Análisis bivariado - Categórico vs Categórico"
+            )
+
+            if "Churn" not in df.columns:
+
+                st.warning(
+                    "La variable Churn no se encuentra en el Data Set."
+                )
+
+            else:
+
+                variables_analizar = []
+
+                if "Contract" in df.columns:
+
+                    variables_analizar.append(
+                        "Contract"
+                    )
+
+                if "InternetService" in df.columns:
+
+                    variables_analizar.append(
+                        "InternetService"
+                    )
+
+                for variable in variables_analizar:
+
+                    st.subheader(
+                        f"{variable} vs Churn"
+                    )
+
+                    tabla = pd.crosstab(
+                        df[variable],
+                        df["Churn"]
+                    )
+
+                    st.write(
+                        "Frecuencias:"
+                    )
+
+                    st.dataframe(
+                        tabla,
+                        use_container_width=True
+                    )
+
+                    porcentajes = pd.crosstab(
+                        df[variable],
+                        df["Churn"],
+                        normalize="index"
+                    ).mul(100).round(2)
+
+                    st.write(
+                        "Porcentajes:"
+                    )
+
+                    st.dataframe(
+                        porcentajes,
+                        use_container_width=True
+                    )
+
+                    fig, ax = plt.subplots(
+                        figsize=(8, 5)
+                    )
+
+                    tabla.plot(
+                        kind="bar",
+                        ax=ax
+                    )
+
+                    ax.set_title(
+                        f"{variable} vs Churn"
+                    )
+
+                    ax.set_xlabel(
+                        variable
+                    )
+
+                    ax.set_ylabel(
+                        "Cantidad de clientes"
+                    )
+
+                    plt.xticks(
+                        rotation=45
+                    )
+
+                    st.pyplot(fig)
+
+                    plt.close()
+
+
+        # =========================
+        # ÍTEM 9
+        # =========================
+
+        elif Módulos == "Ítem 9: Parámetros seleccionados":
+
+            st.header(
+                "Ítem 9: Análisis mediante parámetros seleccionados"
+            )
+
+            variables_numericas = df.select_dtypes(
+                include="number"
+            ).columns.tolist()
+
+            variables_categoricas = df.select_dtypes(
+                exclude="number"
+            ).columns.tolist()
+
+            if variables_numericas:
+
+                variable_numerica = st.selectbox(
+                    "Seleccione una variable numérica:",
+                    variables_numericas
+                )
+
+                st.subheader(
+                    f"Análisis de {variable_numerica}"
+                )
+
+                st.dataframe(
+                    df[
+                        variable_numerica
+                    ].describe().to_frame(),
+                    use_container_width=True
+                )
+
+                fig, ax = plt.subplots(
+                    figsize=(8, 4)
+                )
+
+                sns.histplot(
+                    data=df,
+                    x=variable_numerica,
+                    kde=True,
+                    ax=ax
+                )
+
+                ax.set_title(
+                    f"Distribución de {variable_numerica}"
+                )
+
+                st.pyplot(fig)
+
+                plt.close()
+
+            if variables_categoricas:
+
+                variables_seleccionadas = st.multiselect(
+                    "Seleccione una o más variables categóricas:",
+                    variables_categoricas
+                )
+
+                for variable in variables_seleccionadas:
+
+                    st.subheader(
+                        f"Análisis de {variable}"
+                    )
+
+                    conteo = df[
+                        variable
+                    ].value_counts(
+                        dropna=False
+                    )
+
+                    st.dataframe(
+                        conteo.reset_index(
+                            name="Cantidad"
+                        ),
+                        use_container_width=True
+                    )
+
+                    fig, ax = plt.subplots(
+                        figsize=(8, 4)
+                    )
+
+                    sns.countplot(
+                        data=df,
+                        x=variable,
+                        order=conteo.index,
+                        ax=ax
+                    )
+
+                    ax.set_title(
+                        f"Distribución de {variable}"
+                    )
+
+                    ax.set_xlabel(
+                        variable
+                    )
+
+                    ax.set_ylabel(
+                        "Cantidad"
+                    )
+
+                    plt.xticks(
+                        rotation=45
+                    )
+
+                    plt.tight_layout()
+
+                    st.pyplot(fig)
+
+                    plt.close()
+
+
+        # =========================
+        # ÍTEM 10
+        # =========================
+
+        elif Módulos == "Ítem 10: Hallazgos clave":
+
+            st.header(
+                "Ítem 10: Hallazgos clave"
+            )
+
+            if "Churn" not in df.columns:
+
+                st.warning(
+                    "La variable Churn no se encuentra en el Data Set."
+                )
+
+            else:
+
+                total_clientes = len(df)
+
+                churn_normalizado = (
+                    df["Churn"]
+                    .astype(str)
+                    .str.strip()
+                    .str.lower()
+                )
+
+                clientes_churn = (
+                    churn_normalizado == "yes"
+                ).sum()
+
+                tasa_churn = (
+                    clientes_churn /
+                    total_clientes
+                ) * 100
+
+                col1, col2, col3 = st.columns(3)
+
+                with col1:
+
+                    st.metric(
+                        "Total de clientes",
+                        total_clientes
+                    )
+
+                with col2:
+
+                    st.metric(
+                        "Clientes con Churn",
+                        clientes_churn
+                    )
+
+                with col3:
+
+                    st.metric(
+                        "Tasa de Churn",
+                        f"{tasa_churn:.2f}%"
+                    )
+
+                st.subheader(
+                    "Distribución de Churn"
+                )
+
+                conteo_churn = df[
+                    "Churn"
+                ].value_counts()
+
+                fig, ax = plt.subplots(
+                    figsize=(7, 4)
+                )
+
+                sns.barplot(
+                    x=conteo_churn.index,
+                    y=conteo_churn.values,
+                    ax=ax
+                )
+
+                ax.set_title(
+                    "Distribución de clientes según Churn"
+                )
+
+                ax.set_xlabel(
+                    "Churn"
+                )
+
+                ax.set_ylabel(
+                    "Cantidad de clientes"
+                )
+
+                st.pyplot(fig)
+
+                plt.close()
+
+                st.subheader(
+                    "Principales hallazgos"
+                )
+
+                st.write(
+                    f"""
+                    - El Data Set contiene **{total_clientes} clientes**.
+                    - Se identificaron **{clientes_churn} clientes** que abandonaron el servicio.
+                    - La tasa general de Churn es de **{tasa_churn:.2f}%**.
+                    """
+                )
+
+                if "tenure" in df.columns:
+
+                    promedio_tenure = df.groupby(
+                        "Churn"
+                    )["tenure"].mean()
+
+                    st.write(
+                        "Antigüedad promedio según Churn:"
+                    )
+
+                    st.dataframe(
+                        promedio_tenure.to_frame(
+                            "Antigüedad promedio"
+                        ),
+                        use_container_width=True
+                    )
+
+                if "MonthlyCharges" in df.columns:
+
+                    promedio_cargos = df.groupby(
+                        "Churn"
+                    )["MonthlyCharges"].mean()
+
+                    st.write(
+                        "Cargo mensual promedio según Churn:"
+                    )
+
+                    st.dataframe(
+                        promedio_cargos.to_frame(
+                            "Cargo mensual promedio"
+                        ),
+                        use_container_width=True
+                    )
+
+                st.info(
+                    """
+                    Estos resultados permiten identificar diferencias entre
+                    los clientes que permanecen en el servicio y aquellos que
+                    presentan Churn.
+                    """
+                )
